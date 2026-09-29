@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Orari Preite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+    <title>Orari Preite</title>
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#005c95">
@@ -16,37 +17,142 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Special+Gothic+Condensed+One&display=swap');
 
-        .titolo{
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            box-sizing: border-box;
+        }
+
+        #splash.nascondi {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #splash .logo-splash {
+            width: 200px;
+            max-width: 60%;
+            margin-bottom: 30px;
+            animation: respira 2s ease-in-out infinite;
+        }
+
+        @keyframes respira {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .barra-caricamento {
+            width: 200px;
+            max-width: 60%;
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .barra-caricamento::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background-color: #005c95;
+            border-radius: 3px;
+            animation: riempi 2s ease-in-out forwards;
+        }
+
+        @keyframes riempi {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        #contenuto-principale {
+            opacity: 0;
+            transform: scale(0.98);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        #contenuto-principale.visibile {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        body {
+            margin: 0px;
+            font-family: "Lexend", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .titolo {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
             background-color: #005c95;
             padding: 10px;
+            padding-top: calc(10px + env(safe-area-inset-top));
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
+        .headerlogo {
+            width: 180px;
+        }
+
         input[type="text"] {
-            display: block; 
-            margin-top: 5px; 
-            border: 1px solid #000;  
-            border-radius: 6px;      
-            padding: 8px 12px;       
+            display: block;
+            margin-top: 5px;
+            border: 1px solid #000;
+            border-radius: 6px;
+            padding: 8px 12px;
             outline: none;
             font-family: "Lexend", sans-serif;
             font-size: 13.3333px;
             box-sizing: border-box;
             width: 260px;
+            max-width: 100%;
         }
 
         input[type="time"] {
-            display: block; 
-            margin-top: 5px; 
-            border: 1px solid #000;  
-            border-radius: 6px;      
-            padding: 6px 12px;       
+            display: block;
+            margin-top: 5px;
+            border: 1px solid #000;
+            border-radius: 6px;
+            padding: 6px 12px;
             outline: none;
             font-family: "Lexend", sans-serif;
             font-size: 13.3333px;
             box-sizing: border-box;
+            width: 150px;
+            min-width: 130px;
+            min-height: 34px;
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: #fff;
+            color: #000;
+        }
+
+        input[type="time"]::-webkit-date-and-time-value {
+            text-align: left;
+        }
+
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
         }
 
         label {
@@ -66,7 +172,7 @@
             flex-direction: column;
         }
 
-        h1{
+        h1 {
             font-size: 15px;
         }
 
@@ -78,26 +184,15 @@
             line-height: 1.5;
         }
 
-        hr{
+        hr {
             margin-top: -5px;
         }
 
-        .headerlogo{
-            width: 180px;
-        }
-
-        body{
-            margin: 0px;
-            font-family: "Lexend", sans-serif;
-            font-weight: 400;
-            font-style: normal;
-        }
-
-        .blocco{
+        .blocco {
             margin: 10px;
         }
 
-        .blocco form{
+        .blocco form {
             margin-top: 20px;
         }
 
@@ -138,48 +233,64 @@
     </style>
 </head>
 <body>
-    <header class="titolo">
-        <img src="logo_preite_header.png" class="headerlogo" alt="Preite">
-    </header>
-    <div class="blocco">
-        <div class="titolo-tratta">
-            <h1 id="titolo-tratta">Orari Preite | Praia-Cosenza</h1>
-            <svg id="icona-scambio" class="icona-scambio" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="17 1 21 5 17 9"></polyline>
-                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                <polyline points="7 23 3 19 7 15"></polyline>
-                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-            </svg>
-        </div>
-        <hr>
-        <form onsubmit="return false;">
-            <div class="campo-con-orario">
-                <div>
-                    <label for="partenza">Seleziona partenza:</label>
-                    <input type="text" id="partenza" name="partenza" list="lista-partenza" placeholder="Scrivi la tua partenza..." autocomplete="off">
-                    <datalist id="lista-partenza"></datalist>
-                </div>
-                <div>
-                    <label for="orario-partenza">Orario di partenza:</label>
-                    <input type="time" id="orario-partenza" name="orario-partenza">
-                </div>
-            </div>
-    
-            <br>
-    
-            <div>
-                <label for="arrivo">Seleziona arrivo:</label>
-                <input type="text" id="arrivo" name="arrivo" list="lista-arrivo" placeholder="Scrivi il tuo arrivo..." autocomplete="off">
-                <datalist id="lista-arrivo"></datalist>
-                <div>
-                    <button type="button" id="btn-visualizza">Visualizza</button>
-                </div>
-            </div>
-        </form>
 
-        <p id="risultato-arrivo"></p>
+    <div id="splash">
+        <img src="logo_preite_header.png" class="logo-splash" alt="Preite">
+        <div class="barra-caricamento"></div>
     </div>
+
+    <div id="contenuto-principale">
+        <header class="titolo">
+            <img src="logo_preite_header.png" class="headerlogo" alt="Preite">
+        </header>
+        <div class="blocco">
+            <div class="titolo-tratta">
+                <h1 id="titolo-tratta">Orari Preite | Praia-Cosenza</h1>
+                <svg id="icona-scambio" class="icona-scambio" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="17 1 21 5 17 9"></polyline>
+                    <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                    <polyline points="7 23 3 19 7 15"></polyline>
+                    <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                </svg>
+            </div>
+            <hr>
+            <form onsubmit="return false;">
+                <div class="campo-con-orario">
+                    <div>
+                        <label for="partenza">Seleziona partenza:</label>
+                        <input type="text" id="partenza" name="partenza" list="lista-partenza" placeholder="Scrivi la tua partenza..." autocomplete="off">
+                        <datalist id="lista-partenza"></datalist>
+                    </div>
+                    <div>
+                        <label for="orario-partenza">Orario di partenza:</label>
+                        <input type="time" id="orario-partenza" name="orario-partenza">
+                    </div>
+                </div>
+
+                <br>
+
+                <div>
+                    <label for="arrivo">Seleziona arrivo:</label>
+                    <input type="text" id="arrivo" name="arrivo" list="lista-arrivo" placeholder="Scrivi il tuo arrivo..." autocomplete="off">
+                    <datalist id="lista-arrivo"></datalist>
+                    <div>
+                        <button type="button" id="btn-visualizza">Visualizza</button>
+                    </div>
+                </div>
+            </form>
+
+            <p id="risultato-arrivo"></p>
+        </div>
+    </div>
+
     <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash').classList.add('nascondi');
+                document.getElementById('contenuto-principale').classList.add('visibile');
+            }, 2000);
+        });
+
         const datiPraiaCosenza = {
             "TERMINAL PREITE - TORTORA": ["04:15","05:15","06:05","06:55","07:55","09:50","11:30","13:20","14:20","15:45","17:05","18:05","--","--"],
             "CASTROCUCCO": ["04:16","05:16","06:06","06:56","07:56","09:51","11:31","13:21","14:21","15:46","17:06","18:06","--","--"],
