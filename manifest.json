@@ -8,7 +8,8 @@
   "orientation": "portrait",
   "lang": "it",
   "theme_color": "#005c95",
-  "background_color": "#ffffff",
+  "style": "light",
+  "background_color": "#005c95",
   "icons": [
     {
       "src": "icon-192.png",
